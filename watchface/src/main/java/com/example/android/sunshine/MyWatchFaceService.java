@@ -64,7 +64,7 @@ import java.util.TimeZone;
  * Watch Face for sunshine weather app
  */
 
-public class MyWatchFaceService extends CanvasWatchFaceService  {
+public class MyWatchFaceService extends CanvasWatchFaceService {
 
     //TypeFace required for text
     private static final Typeface MY_TYPEFACE =
@@ -78,7 +78,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
     }
 
     private class Engine extends CanvasWatchFaceService.Engine implements
-            DataApi.DataListener ,
+            DataApi.DataListener,
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
         //Initilizing GoogleApiClient
@@ -124,7 +124,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
         float lineHeight;
         String amString;
         String pmString;
-        String degreeHigh,degreeLow;
+        String degreeHigh, degreeLow;
         int interactive_BackgroundColor = Color.parseColor("#03A9F4");
         int interactive_HourDigitsColor = Color.parseColor("White");
 
@@ -139,7 +139,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
             mGoogleApiClient.connect();
 
             setWatchFaceStyle(new WatchFaceStyle.Builder(MyWatchFaceService.this)
-                    .setCardPeekMode(WatchFaceStyle.PEEK_MODE_VARIABLE)
+                    .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
                     .setShowSystemUiTime(false)
                     .build());
@@ -150,13 +150,13 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
             lineHeight = resources.getDimension(R.dimen.digital_line_height);
             amString = "AM";
             pmString = "PM";
-            degreeHigh="25\u00B0";
-            degreeLow="17\u00B0";
-            isDataUpdated=false;
+            degreeHigh = "25\u00B0";
+            degreeLow = "17\u00B0";
+            isDataUpdated = false;
 
 
-            bitmapWeather = BitmapFactory.decodeResource(resources,R.drawable.ic_clear);
-            bitmapWeather = Bitmap.createScaledBitmap(bitmapWeather,50,50,true);
+            bitmapWeather = BitmapFactory.decodeResource(resources, R.drawable.ic_clear);
+            bitmapWeather = Bitmap.createScaledBitmap(bitmapWeather, 50, 50, true);
 
             backgroungPaintWatchface = new Paint();
             backgroungPaintWatchface.setColor(interactive_BackgroundColor);
@@ -178,11 +178,12 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
         }
 
 
-        boolean isDataUpdated=false;
+        boolean isDataUpdated = false;
+
         @Override
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
-            Log.e("Watchface","onVisibilityChanged");
+            Log.e("Watchface", "onVisibilityChanged");
             if (visible) {
                 mGoogleApiClient.connect();
 
@@ -192,7 +193,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
                 calendar.setTimeZone(TimeZone.getDefault());
                 initFormats();
             } else {
-                isDataUpdated=false;
+                isDataUpdated = false;
                 unregisterReceiver();
 
                 if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -238,7 +239,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
                     ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
 
             normalPaintForText.setTextSize(resources.getDimension(R.dimen.digital_date_text_size));
-            highDegreePaint.setTextSize(resources.getDimension(R.dimen.digital_date_text_size)+5);
+            highDegreePaint.setTextSize(resources.getDimension(R.dimen.digital_date_text_size) + 5);
             timePaint.setTextSize(textSize);
         }
 
@@ -322,18 +323,16 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
             //drawing the timeString
             canvas.drawText(timeString, x, verticalMargin, timePaint);
 
-            // Day , Date , WeatherIcon , temperature will be only drawn when there will not be any peek card
-            if (getPeekCardPosition().isEmpty()) {
-                x = mXOffset;
-                String dayNDate = simpleDateFormat.format(date) + "," + dateFormat.format(date).replace(',', ' ');
-                x -= (normalPaintForText.measureText(dayNDate) / 2);
-                canvas.drawText(
-                        dayNDate,
-                        x, verticalMargin + lineHeight, normalPaintForText);
-                canvas.drawBitmap(bitmapWeather,x, verticalMargin + lineHeight *2,new Paint());
-                canvas.drawText(degreeHigh,x+60, verticalMargin + lineHeight *2 + 40, highDegreePaint);
-                canvas.drawText(degreeLow,x+80+ normalPaintForText.measureText(degreeHigh), verticalMargin + lineHeight *2 + 40, normalPaintForText);
-            }
+            // Drawing Day , Date , WeatherIcon , temperature
+            x = mXOffset;
+            String dayNDate = simpleDateFormat.format(date) + "," + dateFormat.format(date).replace(',', ' ');
+            x -= (normalPaintForText.measureText(dayNDate) / 2);
+            canvas.drawText(
+                    dayNDate,
+                    x, verticalMargin + lineHeight, normalPaintForText);
+            canvas.drawBitmap(bitmapWeather, x, verticalMargin + lineHeight * 2 -30, new Paint());
+            canvas.drawText(degreeHigh, x + 60, verticalMargin + lineHeight * 2 + 10, highDegreePaint);
+            canvas.drawText("/ "+degreeLow, x + 80 + normalPaintForText.measureText(degreeHigh), verticalMargin + lineHeight * 2 + 10, normalPaintForText);
 
 
         }
@@ -341,8 +340,8 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
 
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-            Wearable.DataApi.addListener(mGoogleApiClient,this);
-            if(!isDataUpdated){
+            Wearable.DataApi.addListener(mGoogleApiClient, this);
+            if (!isDataUpdated) {
                 PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/sendMeData");
                 putDataMapReq.getDataMap().putString("time", System.currentTimeMillis() + "");
                 PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
@@ -355,7 +354,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
                                 if (!dataItemResult.getStatus().isSuccess()) {
                                     Log.e("MyWatchFace", "ERROR: failed to putDataItem, status code: "
                                             + dataItemResult.getStatus().getStatusCode());
-                                }else{
+                                } else {
                                     Log.e("MyWatchFace", "SendMeData request has been send"
                                             + dataItemResult.getStatus().getStatusCode());
                                 }
@@ -363,7 +362,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
 
                         });
             }
-            Log.e("MainActivity", "Google client onConnected() inside wear watchFace "+isDataUpdated);
+            Log.e("MainActivity", "Google client onConnected() inside wear watchFace " + isDataUpdated);
         }
 
         @Override
@@ -378,13 +377,13 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
 
         @Override
         public void onDataChanged(DataEventBuffer dataEvents) {
-            Log.e("MyWatchFaceService","Inside onDataChanged()");
-            for(DataEvent event:dataEvents){
-                if(event.getType()==DataEvent.TYPE_CHANGED){
+            Log.e("MyWatchFaceService", "Inside onDataChanged()");
+            for (DataEvent event : dataEvents) {
+                if (event.getType() == DataEvent.TYPE_CHANGED) {
                     DataItem item = event.getDataItem();
-                    Log.e("MyWatchFaceService", "path="+item.getUri().getPath());
+                    Log.e("MyWatchFaceService", "path=" + item.getUri().getPath());
                     if (item.getUri().getPath().compareTo("/data") == 0) {
-                        isDataUpdated=true;
+                        isDataUpdated = true;
                         DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                         degreeHigh = dataMap.getString("highTempKey");
                         degreeLow = dataMap.getString("lowTempKey");
@@ -400,7 +399,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
                 throw new IllegalArgumentException("Asset must be non-null");
             }
 
-            new AsyncTask<Void,Void,Void>(){
+            new AsyncTask<Void, Void, Void>() {
 
                 @Override
                 protected Void doInBackground(Void... params) {
@@ -409,7 +408,7 @@ public class MyWatchFaceService extends CanvasWatchFaceService  {
                             mGoogleApiClient, asset).await().getInputStream();
                     // decode the stream into a bitmap
                     bitmapWeather = BitmapFactory.decodeStream(assetInputStream);
-                    bitmapWeather = Bitmap.createScaledBitmap(bitmapWeather,50,50,true);
+                    bitmapWeather = Bitmap.createScaledBitmap(bitmapWeather, 50, 50, true);
                     return null;
                 }
 
