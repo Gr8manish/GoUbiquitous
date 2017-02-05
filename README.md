@@ -4,7 +4,7 @@ Build a wearable watch face for Sunshine to run on an Android Wear device.
 ### What I Learned?
 - Understand the fundamentals of Android Wear.
 - Design for multiple watch form factors.
- - Communicate between a mobile device and a wearable device.
+- Communicate between a mobile device and a wearable device.
 
 ### About the final app
 
