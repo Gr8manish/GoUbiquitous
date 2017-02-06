@@ -1,6 +1,10 @@
 # GoUbiquitous
 Build a wearable watch face for Sunshine to run on an Android Wear device.
 
+### Screenshot
+
+![alt tag](https://github.com/Gr8manish/GoUbiquitous/blob/master/Screenshot/WatchFace.png "Moviez")
+
 ### What I Learned?
 - Understand the fundamentals of Android Wear.
 - Design for multiple watch form factors.
